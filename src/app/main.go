@@ -5,6 +5,8 @@ import (
 	"errors"
 	"log"
 	"net/http"
+
+	"foozle/pkg/report"
 )
 
 type errorTrackStruct struct {
@@ -29,7 +31,6 @@ func main() {
 	log.Println("Starting server on :8080...")
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
-
 }
 
 func trackError(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +47,7 @@ func trackError(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	} else {
-
+		report.Create()
 	}
 
 	js, err := json.Marshal(errorTrack)
