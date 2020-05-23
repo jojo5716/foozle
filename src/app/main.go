@@ -25,6 +25,10 @@ type errorTrackStruct struct {
 	UserInfo    interface{} `json:userInfo`
 }
 
+type ajaxResponse struct {
+	Ok bool
+}
+
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/track/error/", trackError)
@@ -51,9 +55,12 @@ func trackError(w http.ResponseWriter, r *http.Request) {
 		go report.Create()
 	}
 
-	js, err := json.Marshal(errorTrack)
+	// js, err := json.Marshal(errorTrack)
 
 	w.Header().Set("Content-Type", "application/json")
+	response := ajaxResponse{Ok: true}
+	js, _ := json.Marshal(response)
+
 	w.Write(js)
 
 }
