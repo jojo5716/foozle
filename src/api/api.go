@@ -1,29 +1,30 @@
 package api
 
 import (
-	"context"
 	"fmt"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	// "go.mongodb.org/mongo-driver/mongo"
 )
 
-var client *mongo.Client
+// var dbClient *mongo.Client
 
-func connect() {
-	host := "localhost"
-	port := 27017
 
-	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d", host, port))
-	client, _ = mongo.Connect(context.TODO(), clientOpts)
+type Connection interface {
+	Connect() string
+}
+
+type Client struct {
+	Host string
+	Port int32
+}
+
+func (m *Client) Connect() string {
+	return m.Host
 }
 
 func Initialize() {
-	connect()
+	client := Client{Host: "localhost", Port: 27017}
 
-	fmt.Println("Congratulations, you're already connected to MongoDB!")
-}
-
-func GetClient() *mongo.Client {
-	return client
+	var connection Connection
+	connection = &client
+	fmt.Println(connection.Connect())
 }
