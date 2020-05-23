@@ -7,12 +7,19 @@ import (
 	"net/http"
 )
 
-type errorTrackRequest struct {
-	ID     string   `json:"ID"`
-	Name   string   `json:"name"`
-	Image  string   `json:"image"`
-	Age    int      `json:"age"`
-	Errors []string `json:"errors"`
+type errorTrackStruct struct {
+	Project     string      `json:"project"`
+	LoadedOn    string      `json:loadedOn`
+	SessionTemp string      `json:sessionTemp`
+	Session     string      `json:session`
+	PageToken   string      `json:pageToken`
+	EventTime   float32     `json:eventTime`
+	Data        interface{} `json:"data"`
+	Page        interface{} `json:page`
+	Enviroment  interface{} `json:enviroment`
+	MetaData    interface{} `json:metaData`
+	Actions     interface{} `json:actions`
+	UserInfo    interface{} `json:userInfo`
 }
 
 func main() {
@@ -26,9 +33,9 @@ func main() {
 }
 
 func trackError(w http.ResponseWriter, r *http.Request) {
-	var errorTrack errorTrackRequest
-
+	var errorTrack errorTrackStruct
 	err := decodeJSONBody(w, r, &errorTrack)
+
 	if err != nil {
 		var mr *malformedRequest
 		if errors.As(err, &mr) {
@@ -38,6 +45,8 @@ func trackError(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 		return
+	} else {
+
 	}
 
 	js, err := json.Marshal(errorTrack)
