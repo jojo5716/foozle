@@ -6,7 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"foozle/pkg/report"
+	// Internal packages
+	"report"
 )
 
 type errorTrackStruct struct {
@@ -47,7 +48,7 @@ func trackError(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	} else {
-		report.Create()
+		go report.Create()
 	}
 
 	js, err := json.Marshal(errorTrack)
