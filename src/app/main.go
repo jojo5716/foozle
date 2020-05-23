@@ -10,20 +10,6 @@ import (
 	"report"
 )
 
-type errorTrackStruct struct {
-	Project     string      `json:"project"`
-	LoadedOn    string      `json:loadedOn`
-	SessionTemp string      `json:sessionTemp`
-	Session     string      `json:session`
-	PageToken   string      `json:pageToken`
-	EventTime   float32     `json:eventTime`
-	Data        interface{} `json:"data"`
-	Page        interface{} `json:page`
-	Enviroment  interface{} `json:enviroment`
-	MetaData    interface{} `json:metaData`
-	Actions     interface{} `json:actions`
-	UserInfo    interface{} `json:userInfo`
-}
 
 type ajaxResponse struct {
 	Ok bool
@@ -39,8 +25,9 @@ func main() {
 }
 
 func trackError(w http.ResponseWriter, r *http.Request) {
-	var errorTrack errorTrackStruct
-	err := decodeJSONBody(w, r, &errorTrack)
+	var visitReport report.VisitReport
+
+	err := decodeJSONBody(w, r, &visitReport)
 
 	if err != nil {
 		var mr *malformedRequest
@@ -52,10 +39,8 @@ func trackError(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	} else {
-		go report.Create()
+		go report.Create(visitReport)
 	}
-
-	// js, err := json.Marshal(errorTrack)
 
 	w.Header().Set("Content-Type", "application/json")
 	response := ajaxResponse{Ok: true}
