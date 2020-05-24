@@ -2,7 +2,6 @@ package project
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -27,21 +26,14 @@ func (p *Project) getCollection() *mongo.Collection {
 
 func (p *Project) Exist() bool {
 	var result Project
-	var hasToCreateProject bool
 
 	projectCollection := p.getCollection()
 
-	err := projectCollection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+	filter := bson.D{{"uuid", p.Uuid}}
 
-	if err != nil {
-		log.Fatal("ERROR: %v\n", err)
-		hasToCreateProject = false
-	} else {
-		hasToCreateProject = true
-	}
+	projectCollection.FindOne(context.TODO(), filter).Decode(&result)
 
-	return hasToCreateProject
-
+	return result.Uuid != ""
 }
 
 func (p *Project) Create() {

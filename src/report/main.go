@@ -14,6 +14,10 @@ const (
 	PORT   = 27017
 )
 
+type Report interface {
+	GenerateVisitReport()
+}
+
 type VisitReport struct {
 	Project     string      `json:"project"`
 	LoadedOn    string      `json:loadedOn`
@@ -30,8 +34,6 @@ type VisitReport struct {
 }
 
 func Create(visitReport VisitReport) {
-	fmt.Println("Creating report ...", visitReport)
-
 	client := api.Client{Host: HOST, Port: PORT}
 	var connection api.Connection
 	connection = &client
@@ -39,8 +41,8 @@ func Create(visitReport VisitReport) {
 	connection.Connect()
 
 	p := project.Project{
-		Uuid:       "22",
-		Name:       "ee",
+		Uuid:       visitReport.Project,
+		Name:       visitReport.Project,
 		Connection: connection,
 	}
 
@@ -48,4 +50,12 @@ func Create(visitReport VisitReport) {
 		p.Create()
 	}
 
+	var report Report
+	report = &visitReport
+
+	go report.GenerateVisitReport()
+}
+
+func (v VisitReport) GenerateVisitReport() {
+	fmt.Println("Creating report ...")
 }
